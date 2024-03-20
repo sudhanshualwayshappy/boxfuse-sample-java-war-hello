@@ -1,0 +1,33 @@
+
+node {
+    // Environment or variables can be set here
+    def appWar = 'boxfuse-sample-java-war-hello.war'
+
+    try {
+        // Stage: GIT checkout
+        stage('GIT checkout') {
+            git 'https://github.com/YugeshKumar01/boxfuse-sample-java-war-hello.git'
+        }
+
+        // Stage: Build
+        stage('build') {
+            sh 'mvn clean package'
+            sh "mv target/*.war target/${appWar}"
+        }
+
+        // Stage: Deploy
+        stage('deploy') {
+            sshagent(['tomcat123']) {
+                sh """
+                    scp -o StrictHostKeyChecking=no target/${appWar} ubuntu@172.31.38.235:/home/ubuntu/apache-tomcat-9.0.87/webapps/
+                    
+                    ssh ubuntu@172.31.38.235 /home/ubuntu/apache-tomcat-9.0.87/bin/shutdown.sh
+                    ssh ubuntu@172.31.38.235 /home/ubuntu/apache-tomcat-9.0.87/bin/startup.sh
+                   """
+            }
+        }
+    } catch (Exception err) {
+        // Error handling
+        throw err // Rethrow the error to fail the build
+    }
+}
