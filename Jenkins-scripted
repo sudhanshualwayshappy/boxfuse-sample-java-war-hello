@@ -6,7 +6,7 @@ node {
     try {
         // Stage: GIT checkout
         stage('GIT checkout') {
-            git 'https://github.com/YugeshKumar01/boxfuse-sample-java-war-hello.git'
+            git 'https://github.com/sudhanshualwayshappy/boxfuse-sample-java-war-hello.git'
         }
 
         // Stage: Build
@@ -17,12 +17,12 @@ node {
 
         // Stage: Deploy
         stage('deploy') {
-            sshagent(['tomcat123']) {
+            sshagent(['tomcat1']) {
                 sh """
-                    scp -o StrictHostKeyChecking=no target/${appWar} ubuntu@172.31.38.235:/home/ubuntu/apache-tomcat-9.0.87/webapps/
+                    scp -o StrictHostKeyChecking=no target/${appWar} ubuntu@3.6.38.55:/home/ubuntu/apache-tomcat-9.0.87/webapps/
                     
-                    ssh ubuntu@172.31.38.235 /home/ubuntu/apache-tomcat-9.0.87/bin/shutdown.sh
-                    ssh ubuntu@172.31.38.235 /home/ubuntu/apache-tomcat-9.0.87/bin/startup.sh
+                    ssh ubuntu@3.6.38.55 /home/ubuntu/apache-tomcat-9.0.87/bin/shutdown.sh
+                    ssh ubuntu@3.6.38.55 /home/ubuntu/apache-tomcat-9.0.87/bin/startup.sh
                    """
             }
         }
